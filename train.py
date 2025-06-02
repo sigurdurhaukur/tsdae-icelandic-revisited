@@ -24,7 +24,7 @@ model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
 
 # using a dataset from the Hugging Face Hub
 ds = load_dataset("mideind/icelandic-common-crawl-corpus-IC3")
-train_sentences = ds["train"]["text"][:2]  # Use the first 100 sentences for training
+train_sentences = ds["train"]["text"]  # Use the first 100 sentences for training
 
 
 # preprocessing
@@ -66,7 +66,7 @@ print(f"Number of sentences after splitting: {len(train_sentences)}")
 train_dataset = datasets.DenoisingAutoEncoderDataset(train_sentences)
 
 # DataLoader to batch your data
-train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=False)
+train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=False)
 
 # Use the denoising auto-encoder loss
 train_loss = losses.DenoisingAutoEncoderLoss(
@@ -83,5 +83,4 @@ model.fit(
     show_progress_bar=True,
 )
 
-model.save("output/tsdae-model")
-model.push_to_hub("Sigurdur/tsdae-icelandic-icebert", private=True)
+model.push_to_hub("Sigurdur/tsdae-icelandic-icebert", private=True, exist_ok=True)
